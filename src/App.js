@@ -32,16 +32,28 @@ class App extends Component {
       movieRows.push(movieRow);
     });
 
-    this.state = { rows: movieRows };
-
-    this.performSearch();
+    this.state = {
+      rows: movieRows,
+      searchTerm: "",
+      movies: []
+    };
   }
 
-  performSearch = () => {
-    const urlString = "...";
+  performSearch = e => {
+    e.preventDefault();
+    const urlString = `https://api.themoviedb.org/3/movie/550?api_key=64c2b191aa0739bffd252c8287ae39c1&query=${
+      this.state.searchTerm
+    }`;
     fetch(urlString)
       .then(res => res.json())
-      .then(res => console.log(res));
+      .then(res => {
+        console.log(res);
+      });
+    console.log(this.state.searchTerm);
+  };
+
+  onChangeHandler = e => {
+    this.setState({ searchTerm: e.target.value });
   };
 
   render() {
@@ -65,15 +77,19 @@ class App extends Component {
             </tr>
           </tbody>
         </table>
-        <input
-          style={{
-            fontSize: 25,
-            display: "block",
-            width: "99%",
-            padding: "8px 16px 8px 0px"
-          }}
-          placeholder="Enter search term "
-        />
+        <form action="" onSubmit={this.performSearch}>
+          <input
+            style={{
+              fontSize: 25,
+              display: "block",
+              width: "99%",
+              padding: "8px 16px 8px 0px"
+            }}
+            placeholder="Enter search term "
+            value={this.state.searchTerm}
+            onChange={this.onChangeHandler}
+          />
+        </form>
         {this.state.rows}
       </div>
     );
