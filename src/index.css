@@ -12,3 +12,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.card_container {
+  background: gray;
+  height: 80vh;
+}
+
+.card {
+  border: 1px solid red;
+  width: 700px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.544);
+}

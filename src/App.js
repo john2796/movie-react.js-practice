@@ -1,55 +1,22 @@
 import React, { Component } from "react";
-import MovieRow from "./containers/MovieRow";
-
-const movies = [
-  {
-    id: 0,
-    title: "Avengers: Infinity War",
-    overview:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque, soluta ratione. "
-  },
-  {
-    id: 1,
-    title: "Captain, Marvel",
-    overview:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque, soluta ratione. "
-  },
-  {
-    id: 2,
-    title: "Avengers: Wonnder Woman",
-    overview:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque, soluta ratione. "
-  }
-];
+import Card from "./containers/Card";
+import About from "./containers/About";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    const movieRows = [];
-    movies.forEach(movie => {
-      const movieRow = <MovieRow movie={movie} key={movie.id} />;
-      movieRows.push(movieRow);
-    });
-
-    this.state = {
-      rows: movieRows,
-      searchTerm: "",
-      movies: []
-    };
-  }
-
+  state = {
+    searchTerm: "",
+    movies: []
+  };
   performSearch = e => {
     e.preventDefault();
-    const urlString = `https://api.themoviedb.org/3/movie/550?api_key=64c2b191aa0739bffd252c8287ae39c1&query=${
+    const urlString = `https://api.themoviedb.org/3/search/movie?api_key=64c2b191aa0739bffd252c8287ae39c1&query=${
       this.state.searchTerm
     }`;
     fetch(urlString)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        this.setState({ movies: res.results });
       });
-    console.log(this.state.searchTerm);
   };
 
   onChangeHandler = e => {
@@ -57,6 +24,9 @@ class App extends Component {
   };
 
   render() {
+    const { movies } = this.state;
+    // filter movies
+
     return (
       <div className="App">
         <table
@@ -70,6 +40,7 @@ class App extends Component {
                 </span>
               </td>
               <td>
+                ]
                 <h1 style={{ color: "ghostWhite", fontSize: 35 }}>
                   MovieDB Search
                 </h1>
@@ -90,7 +61,10 @@ class App extends Component {
             onChange={this.onChangeHandler}
           />
         </form>
-        {this.state.rows}
+        {/* card */}
+        <Card>
+          <About />
+        </Card>
       </div>
     );
   }
