@@ -4,29 +4,47 @@ import About from "./containers/About";
 
 class App extends Component {
   state = {
-    searchTerm: "",
-    movies: []
+    results: [],
+    loading: true,
+    searchText: ""
   };
-  performSearch = e => {
-    e.preventDefault();
-    const urlString = `https://api.themoviedb.org/3/search/movie?api_key=64c2b191aa0739bffd252c8287ae39c1&query=${
-      this.state.searchTerm
-    }`;
+
+  componentDidMount() {
+    this.performSearch();
+  }
+  performSearch = (query = "Captain Marvel") => {
+    const urlString = `https://api.themoviedb.org/3/search/movie?api_key=64c2b191aa0739bffd252c8287ae39c1&query=${query}`;
     fetch(urlString)
       .then(res => res.json())
       .then(res => {
-        this.setState({ movies: res.results });
+        this.setState({
+          loading: false,
+          results: res.results
+        });
+      })
+      .catch(error => {
+        console.log("Error fetching and parsing data", error);
       });
   };
 
-  onChangeHandler = e => {
-    this.setState({ searchTerm: e.target.value });
+  onSearchChange = e => {
+    this.setState({ searchText: e.target.value });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.performSearch(this.query.value);
+    e.currentTarget.reset();
   };
 
   render() {
-    const { movies } = this.state;
-    // filter movies
-
+    const { results, loading } = this.state;
+    let card = results.map(movie => (
+      <Card movie={movie} key={movie.id}>
+        <About />
+      </Card>
+    ));
+    console.log(results);
     return (
       <div className="App">
         <table
@@ -40,7 +58,6 @@ class App extends Component {
                 </span>
               </td>
               <td>
-                ]
                 <h1 style={{ color: "ghostWhite", fontSize: 35 }}>
                   MovieDB Search
                 </h1>
@@ -48,23 +65,16 @@ class App extends Component {
             </tr>
           </tbody>
         </table>
-        <form action="" onSubmit={this.performSearch}>
+        <form onSubmit={this.handleSubmit}>
           <input
-            style={{
-              fontSize: 25,
-              display: "block",
-              width: "99%",
-              padding: "8px 16px 8px 0px"
-            }}
-            placeholder="Enter search term "
-            value={this.state.searchTerm}
-            onChange={this.onChangeHandler}
+            type="search"
+            onChange={this.onSearchChange}
+            name="search"
+            ref={input => (this.query = input)}
+            placeholder="Search..."
           />
         </form>
-        {/* card */}
-        <Card>
-          <About />
-        </Card>
+        {loading ? <p>Loading...</p> : <p>testing</p>}
       </div>
     );
   }
